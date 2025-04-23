@@ -20,9 +20,9 @@
 
             {# Upload in chunks to reduce the query size #}
             {% if dataset == 'models' %}
-                {% set upload_limit = 10 if target.type == 'bigquery' else 100 %}
+                {% set upload_limit = var("dbt_artifacts_upload_limit", 10) if target.type == 'bigquery' else 100 %}
             {% else %}
-                {% set upload_limit = 50 if target.type == 'bigquery' else 5000 %}
+                {% set upload_limit = var("dbt_artifacts_upload_limit", 10) * 6 if target.type == 'bigquery' else 5000 %}
             {% endif %}
 
             {# Loop through each chunk in turn #}
