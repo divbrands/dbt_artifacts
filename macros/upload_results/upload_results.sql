@@ -16,14 +16,14 @@
             {# Get the results that need to be uploaded #}
             {% set objects = dbt_artifacts.get_dataset_content(dataset) %}
 
-            {% do log("Uploading " ~ dataset.replace("_", " ") ~ " with " ~ objects | length ~ " objects", true) %}
-
             {# Upload in chunks to reduce the query size #}
             {% if dataset == 'models' %}
-                {% set upload_limit = var("dbt_artifacts_upload_limit", 10) if target.type == 'bigquery' else 100 %}
+                {% set upload_limit = var("dbt_artifacts_upload_limit", 10) %}
             {% else %}
-                {% set upload_limit = var("dbt_artifacts_upload_limit", 10) * 6 if target.type == 'bigquery' else 5000 %}
+                {% set upload_limit = var("dbt_artifacts_upload_limit", 10) * 6 %}
             {% endif %}
+
+            {% do log("Uploading " ~ dataset.replace("_", " ") ~ " with " ~ objects | length ~ " objects, using batch size of " ~ upload_limit, true) %}
 
             {# Loop through each chunk in turn #}
             {% for i in range(0, objects | length, upload_limit) -%}
