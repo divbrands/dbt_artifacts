@@ -13,10 +13,10 @@
         {# Upload each data set in turn #}
         {% for dataset in datasets_to_load %}
 
-            {% do log("Uploading " ~ dataset.replace("_", " "), true) %}
-
             {# Get the results that need to be uploaded #}
             {% set objects = dbt_artifacts.get_dataset_content(dataset) %}
+
+            {% do log("Uploading " ~ dataset.replace("_", " ") ~ " with " ~ objects | length ~ " objects", true) %}
 
             {# Upload in chunks to reduce the query size #}
             {% if dataset == 'models' %}
